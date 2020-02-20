@@ -51,7 +51,7 @@ def formalisationarticle(listearticles):
 def enregistrer(outfile, data):
     with open (outfile, 'w') as csv_file:
         writer = csv.writer(csv_file, delimiter=';',quotechar='"', quoting=csv.QUOTE_ALL)
-        writer.writerow(["xml-ref","Author", "Article_title", "Periodic_title", "DateOfPrintPublication", "pages"])
+        writer.writerow(["xml-ref","Author_name", "Titre_Article", "Periodic_title", "Print_Date", "pages"])
         writer.writerows(data)
 
 
