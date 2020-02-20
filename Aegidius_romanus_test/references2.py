@@ -57,7 +57,7 @@ def enregistrer(outfile, data):
 
 
 
-articleoutfile="aegidius_bibliography.csv"
+articleoutfile="aegidius_bibliography_articles.csv"
 f = "aegidiusRomanus_complete.txt"
 texte = readfile(f)
 articles, monographies = listreferences(texte[0])
