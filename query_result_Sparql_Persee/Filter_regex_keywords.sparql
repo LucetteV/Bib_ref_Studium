@@ -1,0 +1,24 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX persee: <http://data.persee.fr/ontology/persee-ontology/>
+
+SELECT
+?Article
+(GROUP_CONCAT(DISTINCT ?NomArticle; SEPARATOR=' ; ') AS ?Titre)
+(GROUP_CONCAT(DISTINCT ?motcles; SEPARATOR=' ; ') AS ?keywords)
+(GROUP_CONCAT(DISTINCT ?print_date; SEPARATOR=' ; ') AS ?dateImpr)
+(GROUP_CONCAT(DISTINCT ?nom; SEPARATOR=' ; ') AS ?FamilyName)
+(GROUP_CONCAT(DISTINCT ?prenom; SEPARATOR=' ; ') AS ?GivenName)
+(GROUP_CONCAT(DISTINCT ?nomrevue; SEPARATOR=' ; ') AS ?Periodic)
+
+WHERE {
+  ?Article a persee:Article; dcterms:title ?NomArticle; dcterms:subject ?motscles; dcterms:subject ?motcles; dcterms:creator ?author; dcterms:isPartOf ?revue ; dcterms:abstract ?abstract.
+?author foaf:givenName ?prenom; foaf:familyName ?nom.
+  ?revue rdfs:label ?nomrevue.
+  OPTIONAL{?Article persee:dateOfPrintPublication ?print_date}.
+
+  FILTER regex(?motcles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]iddle [A-a]ge|[M-m]iddle-[A-a]ge|[E-e]dad [M-m]edia|[M-m]edioevo|[M-m]iddeleeuwen|[M-m]ittelalter|[M-m]edieval|[M-m]édiéval|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[S-s]toria [M-m]oderna|[E-r]ra [M-m]oderna|[E-e]poca [M-m]oderna|[M-m]oderne [G-g]eschichte|[H-h]istoria [M-m]oderna|[H-h]ist[o-ó]ria [M-m]oderna|[M-m]oderne [G-g]eschiedenis|[H-h]istoria [W-w]sp[o-ó][l-ł]czesna|новейшая история|[A-a]ntiquit[é-e] [T-t]ardive|[L-l]ate [A-a]ntiquity|[S-s]p[ä-a]tantike|[A-a]ntig[u-ü]edad [T-t]ard[i-í]a|[A-a]ntiguidade [T-t]ardia|[T-t]arda [A-a]ntichit[a-à]|[L-l]ate [O-o]udheid|[P-p][o-ó][z-ź]na [S-s]taro[s-ś][c-ć]|поздняя античность)")
+}
+ORDER BY ?dateImpr
