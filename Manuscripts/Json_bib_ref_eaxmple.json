@@ -1,0 +1,51 @@
+{
+  "Bibliography":[
+    {
+      "manuscripts":[
+        {"id": "integer",
+        "type": "manuscript",
+        "title": "sting",
+        "dateEdition": "integer",
+        "langue": "string",
+        "format": "string",
+        "description": "string",
+        "rights": "string",
+
+      },
+      ]
+    }
+    {
+      "sources":[
+        {...}
+      ]
+    }
+    {
+      "online_resource":[
+        {...}
+      ]
+    }
+    {
+      "about":[
+        {
+          "monography":[
+            {...}
+          ]
+        }
+        {
+          "in":[
+            {
+              "articles":[
+                {...}
+              ]
+            }
+            {
+              "congress_acts":[
+                {...}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
