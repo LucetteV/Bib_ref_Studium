@@ -18,6 +18,6 @@ WHERE {
   ?revue rdfs:label ?nomrevue.
   OPTIONAL{?Article persee:dateOfPrintPublication ?print_date}.
 
-  FILTER regex(?motcles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]iddle [A-a]ge|[M-m]iddle-[A-a]ge|[E-e]dad [M-m]edia|[M-m]edioevo|[M-m]iddeleeuwen|[M-m]ittelalter)|[M-m]edieval|[M-m]édiéval").
+  FILTER regex(?motcles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]iddle [A-a]ge|[M-m]iddle-[A-a]ge|[E-e]dad [M-m]edia|[M-m]edioevo|[M-m]iddeleeuwen|[M-m]ittelalter|[M-m]edieval|[M-m]édiéval)").
 }
 ORDER BY ?dateImpr
