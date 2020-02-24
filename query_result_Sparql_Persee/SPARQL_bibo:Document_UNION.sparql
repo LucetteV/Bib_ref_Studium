@@ -1,0 +1,48 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX persee: <http://data.persee.fr/ontology/persee-ontology/>
+PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+
+SELECT
+?document
+(GROUP_CONCAT(DISTINCT ?TitlePart; SEPARATOR=' ; ') AS ?Titre)
+(GROUP_CONCAT(DISTINCT ?motcles; SEPARATOR=' ; ') AS ?keywords)
+(GROUP_CONCAT(DISTINCT ?print_date; SEPARATOR=' ; ') AS ?dateImpr)
+(GROUP_CONCAT(DISTINCT ?nom; SEPARATOR=' ; ') AS ?FamilyName)
+(GROUP_CONCAT(DISTINCT ?prenom; SEPARATOR=' ; ') AS ?GivenName)
+(GROUP_CONCAT(DISTINCT ?book_name; SEPARATOR=' ; ') AS ?isPartOf)
+(GROUP_CONCAT(DISTINCT ?identifier; SEPARATOR=' ; ') AS ?DOI)
+
+WHERE {
+  {?document a persee:Article; dcterms:title ?TitlePart; dcterms:creator|marcrel:aut ?author; dcterms:isPartOf ?isPartOf; bibo:doi ?identifier.
+?author foaf:givenName ?prenom; foaf:familyName ?nom.
+  ?isPartOf rdfs:label ?book_name.
+    OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
+    OPTIONAL{?document dcterms:subject ?motcles
+   }
+    #FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
+    FILTER regex(?prenom, "(Bernard)")
+  }
+ UNION
+ {?document a persee:Monograph; dcterms:title ?TitlePart; dcterms:creator|marcrel:aut ?author; dcterms:isPartOf ?isPartOf; bibo:doi ?identifier.
+	?auteur foaf:givenName ?prenom; foaf:familyName ?nom.
+  	?isPartOf rdfs:label ?book_name.
+   OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
+   OPTIONAL{?document dcterms:subject ?motscles
+    	FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
+    }
+  }
+   UNION
+  {?document a persee:CollectiveWork; dcterms:title ?TitlePart; dcterms:creator|marcrel:aut ?author; dcterms:isPartOf ?isPartOf; bibo:doi ?identifier.
+?auteur foaf:givenName ?prenom; foaf:familyName ?nom.
+  ?isPartOf rdfs:label ?book_name.
+    OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
+  	OPTIONAL{?document dcterms:subject ?motscles
+    	FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
+    }
+    }
+  }
+ORDER BY ?dateImpr
