@@ -22,27 +22,32 @@ WHERE {
   ?isPartOf rdfs:label ?book_name.
     OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
     OPTIONAL{?document dcterms:subject ?motcles
+      FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
    }
-    #FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
     FILTER regex(?prenom, "(Bernard)")
+    FILTER regex(?nom, "(Guenée)")
   }
  UNION
  {?document a persee:Monograph; dcterms:title ?TitlePart; dcterms:creator|marcrel:aut ?author; dcterms:isPartOf ?isPartOf; bibo:doi ?identifier.
-	?auteur foaf:givenName ?prenom; foaf:familyName ?nom.
-  	?isPartOf rdfs:label ?book_name.
+    ?auteur foaf:givenName ?prenom; foaf:familyName ?nom.
+      ?isPartOf rdfs:label ?book_name.
    OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
    OPTIONAL{?document dcterms:subject ?motscles
-    	FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
+        FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
     }
+    FILTER regex(?prenom, "(Bernard)")
+    FILTER regex(?nom, "(Guenée)")
   }
    UNION
   {?document a persee:CollectiveWork; dcterms:title ?TitlePart; dcterms:creator|marcrel:aut ?author; dcterms:isPartOf ?isPartOf; bibo:doi ?identifier.
 ?auteur foaf:givenName ?prenom; foaf:familyName ?nom.
   ?isPartOf rdfs:label ?book_name.
     OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
-  	OPTIONAL{?document dcterms:subject ?motscles
-    	FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
+      OPTIONAL{?document dcterms:subject ?motscles
+        FILTER regex(?motscles, "([M-m]oyen [A-Âa-â]ge|[M-m]oyen-[A-Âa-â]ge|[M-m]odern [P-p]eriod|[M-m]odern [H-h]istory|[A-a]ntiquité [T-t]ardive)")
     }
+    FILTER regex(?prenom, "(Bernard)")
+    FILTER regex(?nom, "(Guenée)")
     }
   }
 ORDER BY ?dateImpr
