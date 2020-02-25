@@ -9,7 +9,6 @@ PREFIX bibo: <http://purl.org/ontology/bibo/>
 SELECT
 ?document
 (GROUP_CONCAT(DISTINCT ?TitlePart; SEPARATOR=' ; ') AS ?Titre)
-(GROUP_CONCAT(DISTINCT ?motcles; SEPARATOR=' ; ') AS ?keywords)
 (GROUP_CONCAT(DISTINCT ?print_date; SEPARATOR=' ; ') AS ?dateImpr)
 (GROUP_CONCAT(DISTINCT ?nom; SEPARATOR=' ; ') AS ?FamilyName)
 (GROUP_CONCAT(DISTINCT ?prenom; SEPARATOR=' ; ') AS ?GivenName)
@@ -28,7 +27,8 @@ WHERE {
     OPTIONAL{?document persee:dateOfPrintPublication ?print_date}
     OPTIONAL{?document dcterms:subject ?motcles}
   }
-  FILTER regex(?prenom, "(Bernard)")
   FILTER regex(?nom, "(Guenée)")
+  FILTER regex(?book_name, "(.+?des Inscriptions.+)")
+  FILTER regex(?TitlePart, "(entrées royales)")
 }
-Order By ?GivenName
+Order By ?dateImpr
