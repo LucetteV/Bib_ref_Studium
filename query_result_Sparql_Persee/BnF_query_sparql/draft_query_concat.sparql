@@ -1,0 +1,28 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX frbr-rda: <http://rdvocab.info/uri/schema/FRBRentitiesRDA/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdagroup2elements: <http://rdvocab.info/ElementsGr2/>
+
+SELECT ?oeuvre
+(GROUP_CONCAT(DISTINCT ?refWork; SEPARATOR=' ; ')AS ?uri_ref)
+(GROUP_CONCAT(DISTINCT ?cote; SEPARATOR=' ; ')AS ?bib_ref)
+(GROUP_CONCAT(DISTINCT ?id; SEPARATOR=' ; ')AS ?uri_number)
+(GROUP_CONCAT(DISTINCT ?isPartOf; SEPARATOR=' ; ')AS ?in)
+(GROUP_CONCAT(DISTINCT ?bookRef; SEPARATOR=' ; ')AS ?book_ref)
+(GROUP_CONCAT(DISTINCT ?note; SEPARATOR=' ; ')AS ?abstract)
+(GROUP_CONCAT(DISTINCT ?data_page; SEPARATOR=' ; ')AS ?pages)
+
+WHERE{
+  ?oeuvre a skos:Concept;
+    dcterms:subject ?refWork;
+    skos:prefLabel ?cote;
+    dcterms:isPartOf ?isPartOf;
+    bnf-onto:FRBNF ?id;
+	rdfs:seeAlso ?bookRef;
+    foaf:page ?data_page;
+    skos:note ?note.
+  FILTER regex(?cote, "([M-m]anuscrit|[M-m]anuscript|[M-m]anuscrits|[M-m]anuscripts|MS|Ms|ms|HS|Hs|hs)")
+}

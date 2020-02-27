@@ -1,0 +1,17 @@
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX frbr-rda: <http://rdvocab.info/uri/schema/FRBRentitiesRDA/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?refWork ?cote ?uri_number ?isPartOf ?bookRef
+WHERE{
+  ?oeuvre a skos:Concept;
+    dcterms:subject ?refWork;
+    skos:prefLabel ?cote;
+    dcterms:isPartOf ?isPartOf;
+    bnf-onto:FRBNF ?uri_number;
+	rdfs:seeAlso ?bookRef.
+  FILTER regex(?cote, "([M-m]anuscrit|[M-m]anuscript|[M-m]anuscrits|[M-m]anuscripts|MS|Ms|ms|HS|Hs|hs)")
+}
