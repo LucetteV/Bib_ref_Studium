@@ -1,0 +1,25 @@
+PREFIX bio: <http://purl.org/vocab/bio/0.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdau: <http://rdaregistry.info/Elements/u/>
+
+SELECT ?person_uri ?nom_vedette ?nom ?altName
+?id ?IDREFidentifier ?refWork
+?Birth ?birthDate ?Death ?deathDate
+?bibliographicCitation ?idbnf ?sameAs ?short_bio
+WHERE {
+  ?person_uri a foaf:Person; skos:prefLabel ?nom_vedette; foaf:name ?nom; skos:altLabel ?altName; bio:event ?Birth; bio:event ?Death.
+  ?id a bibo:Document; dcterms:identifier ?IDREFidentifier; dcterms:subject ?refWork.
+  OPTIONAL{?refWork dcterms:bibliographicCitation ?bibliographicCitation}
+  OPTIONAL{?person_uri owl:sameAs ?sameAs}
+  OPTIONAL{?person_uri bnf-onto:FRBNF ?idbnf}
+  OPTIONAL{?person_uri rdau:P60492 ?short_bio}
+  OPTIONAL{?Birth a bio:Birth; bio:date ?birthDate}
+  OPTIONAL{?Death a bio:Death; bio:date ?deathDate}
+}
+
+LIMIT 100
