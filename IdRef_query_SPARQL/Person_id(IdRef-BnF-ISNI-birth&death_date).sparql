@@ -1,0 +1,58 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdau: <http://rdaregistry.info/Elements/u/>
+PREFIX isni: <http://isni.org/ontology#>
+PREFIX bio: <http://purl.org/vocab/bio/0.1/>
+# déclaration des PREFIX nécessaires à la requête SPARQL
+
+SELECT ?authority
+  #nous définissons la requête d'une autorité
+(GROUP_CONCAT(DISTINCT ?identifiant;SEPARATOR='; ')AS ?URI_id)
+(GROUP_CONCAT(DISTINCT ?id;SEPARATOR='; ')AS ?idIDREF)
+(GROUP_CONCAT(DISTINCT ?BNFid;SEPARATOR='; ')AS ?idBnF)
+(GROUP_CONCAT(DISTINCT ?isniID; SEPARATOR='; ')AS ?idISNI)
+(GROUP_CONCAT(DISTINCT ?nom;SEPARATOR='; ')AS ?current_name)
+(GROUP_CONCAT(DISTINCT ?otherName;SEPARATOR='; ')AS ?other_name)
+(GROUP_CONCAT(DISTINCT ?mainName;SEPARATOR='; ')AS ?main_name)
+(GROUP_CONCAT(DISTINCT ?Birth;SEPARATOR='; ')AS ?birth_date)
+(GROUP_CONCAT(DISTINCT ?Death;SEPARATOR='; ')AS ?death_date)
+(GROUP_CONCAT(DISTINCT ?sameAs;SEPARATOR='; ')AS ?ext_ref)
+(GROUP_CONCAT(DISTINCT ?short_bio;SEPARATOR='; ')AS ?Bio)
+# (GROUP_CONCAT(DISTINCT ?xxxxx;SEPARATOR=';')AS ?xxxxx) permet de supprimer les doublons et d'afficher plusieurs résultats corrélés à "authority" dans une même colonne
+# Cette étape permet de savoir ce que nous voulons afficher dans le résultat de la requête
+
+WHERE {
+  ?authority a bibo:Document; foaf:primaryTopic ?identifiant; dcterms:identifier ?id.
+# nous définissons ici 'authority' comme étant un élément que l'on trouve dans bibo:Document et qui correspond au niveau le plus haut de description en rdf des données structurées dans IdRef
+# 'authority' correspond à un 'foaf:primaryTopic' que nous allons faire apparaître dans la colonne ?URI_id et que nous définissons comme un ?identifiant
+# 'authority' est également un dcterms:identifier que nous allons faire apparaître dans la colonne ?idIDREF et que nous définission comme un ?id
+  ?identifiant ?auteur foaf:Person.
+  # nous recherchons dans ?identifiant un ?auteur qui est une foaf:Person. Cela permet de définir que nous cherchons une personne et donc de faire un premier filtre sur les données qui vont sortir de la requête, par exemple nous supprimons de facto les organisations (entre autres)
+  OPTIONAL{?identifiant foaf:name ?nom.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les foaf:name que nous avons défini comme étant la variable ?nom et qui vont apparaître dans la colonne ?current_name
+  OPTIONAL{?identifiant skos:altLabel ?otherName.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les skos:altLabel que nous avons défini comme étant la variable ?otherName et qui vont apparaître dans la colonne ?other_name
+  OPTIONAL{?identifiant skos:prefLabel ?mainName.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les skos:prefLabel que nous avons défini comme étant la variable ?mainName et qui vont apparaître dans la colonne ?main_name
+  OPTIONAL{?identifiant bnf-onto:FRBNF ?BNFid.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les bnf-onto:FRBNF que nous avons défini comme étant la variable ?BNFid et qui vont apparaître dans la colonne ?idBnF
+  OPTIONAL{?identifiant isni:identifierValid ?isniID.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les isni:identifierValid que nous avons défini comme étant la variable ?isniID et qui vont apparaître dans la colonne ?idISNI
+  OPTIONAL{?identifiant bio:event [a bio:Birth; bio:date ?Birth]}
+  # nous précisons que nous recherchons dans la classe ?identifiant les éléments de la classe bio:event en précisant que nous recherchons le noeud correspondant à bio:Birth parent de bio:date que nous avons défni comme étant la variable ?Birth et qui vont apparaître dans la colonne ?birth_date
+  OPTIONAL{?identifiant bio:event [a bio:Death; bio:date ?Death]}
+  # nous précisons que nous recherchons dans la classe ?identifiant les éléments de la classe bio:event en précisant que nous recherchons le noeud correspondant à bio:Death parent de bio:date que nous avons défni comme étant la variable ?Death et qui vont apparaître dans la colonne ?death_date
+  OPTIONAL{?identifiant owl:sameAs ?sameAs.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les owl:sameAs que nous avons défini comme étant la variable ?sameAs et qui vont apparaître dans la colonne ?ext_ref
+  OPTIONAL{?identifiant rdau:P60492 ?short_bio.}
+  # nous précisons que nous recherchons dans la classe ?identifiant les rdau:P60492 que nous avons défini comme étant la variable ?short_bio et qui vont apparaître dans la colonne ?Bio
+
+  # OPTIONAL est utilisé pour préciser que nous mettons ces paramètres en option afin de ne pas restreindre la réponse. En effet les éléments foaf:name, skos:prefLabel, bnf-onto:FRBNF etc. ne sont pas toujours utilisés dans les notices
+  FILTER regex(?mainName, ("([(]10)|([(]11)|([(]12)|([(]13)|([(]14)|([(]15)"))
+  # nous filtrons grâce aux RegEx sur l'élément ?mainName les années commençant par 10, 11, 12, 13, 14, 15
+}
