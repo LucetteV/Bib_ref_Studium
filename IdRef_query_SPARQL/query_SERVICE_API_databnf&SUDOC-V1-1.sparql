@@ -1,0 +1,44 @@
+#TEST NICOLE ORESME <http://www.idref.fr/027053377/id>
+
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?bibref ?uri
+(GROUP_CONCAT(DISTINCT ?role; SEPARATOR=' ; ')AS ?Role)
+(GROUP_CONCAT(DISTINCT ?sujet; SEPARATOR=' ; ')AS ?RAMEAU)
+
+WHERE {
+  {<http://www.idref.fr/027053377/id> skos:prefLabel ?name.
+  ?uri ?relator <http://www.idref.fr/027053377/id>; dcterms:bibliographicCitation ?bibref.
+OPTIONAL{?relator skos:prefLabel|foaf:name ?role}
+OPTIONAL{?uri dcterms:subject ?sujet}
+OPTIONAL{?uri marcrel:aut ?auteur}
+OPTIONAL{?uri marcrel:cwt ?comm_writer}
+OPTIONAL{?uri marcrel:dub ?presumedAuthor}
+OPTIONAL{?uri marcrel:aft ?OtherAuthor}
+OPTIONAL{?uri marcrel:ann ?annotator}
+OPTIONAL{?uri marcrel:aqt ?citationAuthor}
+OPTIONAL{?uri marcrel:cmm ?commentateur}
+OPTIONAL{?uri marcrel:dte ?dedicataire}
+OPTIONAL{?uri marcrel:dto ?dedicateur}
+OPTIONAL{?uri marcrel:ilu ?enlumineur}
+OPTIONAL{?uri marcrel:oth ?other}
+OPTIONAL{?uri marcrel:prt ?imprimeur}
+OPTIONAL{?uri marcrel:scr ?copiste}
+OPTIONAL{?uri marcrel:sgn ?signataire}
+  }
+  UNION
+  {
+    GRAPH ?g{<http://www.idref.fr/027053377/id> skos:prefLabel ?name; bnf-onto:FRBNF ?idbnf.}
+    SERVICE <http://data.bnf.fr/sparql>
+    {?noticebnf bnf-onto:FRBNF ?frbnf; foaf:focus ?ressourcebnf
+      OPTIONAL{?expression a <http://rdvocab.info/uri/schema/FRBNFentitiesRDA/Expression>; ?relator ?ressourcebnf.
+        ?relator a skos:Concept; skos:prefLabel ?role.
+        ?manifestation <http://rdvocab.info/RDArelationshipsWEMI/expressionManifested> ?expression;dcterms:title ?bibref; rdfs:seeAlso ?uri.}
+    }
+  }
+}

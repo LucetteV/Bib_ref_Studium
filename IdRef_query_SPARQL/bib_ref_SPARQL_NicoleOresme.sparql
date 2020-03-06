@@ -1,0 +1,44 @@
+#TEST NICOLE ORESME <http://www.idref.fr/027053377/id>
+
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
+
+SELECT ?name ?bibref
+(GROUP_CONCAT(DISTINCT ?uri; SEPARATOR=' ; ')AS ?SUDOC)
+(GROUP_CONCAT(DISTINCT ?role; SEPARATOR=' ; ')AS ?Role)
+(GROUP_CONCAT(DISTINCT ?sujet; SEPARATOR=' ; ')AS ?RAMEAU)
+(GROUP_CONCAT(DISTINCT ?auteur; SEPARATOR=' ; ')AS ?Associated_Author)
+(GROUP_CONCAT(DISTINCT ?comm_writer; SEPARATOR=' ; ')AS ?ComWriter)
+(GROUP_CONCAT(DISTINCT ?presumedAuthor; SEPARATOR=' ; ')AS ?dub_Author)
+(GROUP_CONCAT(DISTINCT ?OtherAuthor; SEPARATOR=' ; ')AS ?PF_Colof_Author)
+(GROUP_CONCAT(DISTINCT ?annotator; SEPARATOR=' ; ')AS ?Annotator)
+(GROUP_CONCAT(DISTINCT ?citationAuthor; SEPARATOR=' ; ')AS ?citation_Author)
+(GROUP_CONCAT(DISTINCT ?commentateur; SEPARATOR=' ; ')AS ?commentator)
+(GROUP_CONCAT(DISTINCT ?dedicataire; SEPARATOR=' ; ')AS ?Dedicataire)
+(GROUP_CONCAT(DISTINCT ?dedicateur; SEPARATOR=' ; ')AS ?dedicator)
+(GROUP_CONCAT(DISTINCT ?enlumineur; SEPARATOR=' ; ')AS ?iluminator)
+(GROUP_CONCAT(DISTINCT ?other; SEPARATOR=' ; ')AS ?Other)
+(GROUP_CONCAT(DISTINCT ?imprimeur; SEPARATOR=' ; ')AS ?printor)
+(GROUP_CONCAT(DISTINCT ?copiste; SEPARATOR=' ; ')AS ?scribe)
+(GROUP_CONCAT(DISTINCT ?signataire; SEPARATOR=' ; ')AS ?signator)
+
+WHERE {<http://www.idref.fr/027053377/id> skos:prefLabel ?name.
+  ?uri ?relator <http://www.idref.fr/027053377/id>; dcterms:bibliographicCitation ?bibref.
+OPTIONAL{?relator skos:prefLabel ?role}
+OPTIONAL{?uri dcterms:subject ?sujet}
+OPTIONAL{?uri marcrel:aut ?auteur}
+OPTIONAL{?uri marcrel:cwt ?comm_writer}
+OPTIONAL{?uri marcrel:dub ?presumedAuthor}
+OPTIONAL{?uri marcrel:aft ?OtherAuthor}
+OPTIONAL{?uri marcrel:ann ?annotator}
+OPTIONAL{?uri marcrel:aqt ?citationAuthor}
+OPTIONAL{?uri marcrel:cmm ?commentateur}
+OPTIONAL{?uri marcrel:dte ?dedicataire}
+OPTIONAL{?uri marcrel:dto ?dedicateur}
+OPTIONAL{?uri marcrel:ilu ?enlumineur}
+OPTIONAL{?uri marcrel:oth ?other}
+OPTIONAL{?uri marcrel:prt ?imprimeur}
+OPTIONAL{?uri marcrel:scr ?copiste}
+OPTIONAL{?uri marcrel:sgn ?signataire}
+}

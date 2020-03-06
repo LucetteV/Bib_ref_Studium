@@ -1,0 +1,30 @@
+# TEST GILLES DE ROME <http://www.idref.fr/028176685/id>
+
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
+
+SELECT ?name
+(GROUP_CONCAT(DISTINCT ?uri; SEPARATOR=' ; ')AS ?SUDOC)
+(GROUP_CONCAT(DISTINCT ?role; SEPARATOR=' ; ')AS ?Role)
+    ?bibref ?sujet ?auteur ?comm_writer ?presumedAuthor
+
+WHERE {<http://www.idref.fr/028176685/id> skos:prefLabel ?name.
+  ?uri ?relator <http://www.idref.fr/028176685/id>; dcterms:bibliographicCitation ?bibref.
+OPTIONAL{?relator skos:prefLabel ?role}
+OPTIONAL{?uri dcterms:subject ?sujet}
+OPTIONAL{?uri marcrel:aut ?auteur}
+OPTIONAL{?uri marcrel:cwt ?comm_writer}
+OPTIONAL{?uri marcrel:dub ?presumedAuthor}
+OPTIONAL{?uri marcrel:aft ?OtherAuthor}
+OPTIONAL{?uri marcrel:ann ?annotator}
+OPTIONAL{?uri marcrel:aqt ?citationAuthor}
+OPTIONAL{?uri marcrel:cmm ?commentateur}
+OPTIONAL{?uri marcrel:dte ?dedicataire}
+OPTIONAL{?uri marcrel:dto ?dedicateur}
+OPTIONAL{?uri marcrel:ilu ?enlumineur}
+OPTIONAL{?uri marcrel:oth ?other}
+OPTIONAL{?uri marcrel:prt ?imprimeur}
+OPTIONAL{?uri marcrel:scr ?copiste}
+OPTIONAL{?uri marcrel:sgn ?signataire}
+}
