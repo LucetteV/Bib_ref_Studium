@@ -1,3 +1,5 @@
+#NICOLE ORESME Test
+
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -13,15 +15,15 @@ SELECT ?name ?bibref
 (GROUP_CONCAT(DISTINCT ?auteur; SEPARATOR=' ; ')AS ?Associated_Author)
 
 	WHERE {
-  {<http://www.idref.fr/PPN/id> skos:prefLabel ?name.
-  ?uri ?relator <http://www.idref.fr/PPN/id>; dcterms:bibliographicCitation ?bibref.
+  {<http://www.idref.fr/027053377/id> skos:prefLabel ?name.
+  ?uri ?relator <http://www.idref.fr/027053377/id>; dcterms:bibliographicCitation ?bibref.
 OPTIONAL{?relator skos:prefLabel ?role}
 OPTIONAL{?uri dcterms:subject ?sujet}
 OPTIONAL{?uri marcrel:aut ?auteur}
 		}
 		UNION
 
-		{GRAPH ?g {<http://www.idref.fr/PPN/id> foaf:name ?name ; bnf-onto:FRBNF ?frbnf.}
+		{GRAPH ?g {<http://www.idref.fr/027053377/id> foaf:name ?name ; bnf-onto:FRBNF ?frbnf.}
 		 SERVICE <http://data.bnf.fr/sparql>
 			{?noticebnf bnf-onto:FRBNF ?frbnf ; foaf:focus ?ressourcebnf
 			OPTIONAL {?expression  a <http://rdvocab.info/uri/schema/FRBRentitiesRDA/Expression> ; ?relator ?ressourcebnf.
@@ -29,4 +31,4 @@ OPTIONAL{?uri marcrel:aut ?auteur}
 	?manifestation <http://rdvocab.info/RDARelationshipsWEMI/expressionManifested> ?expression ; dcterms:title ?titre ; dcterms:date ?date ; rdfs:seeAlso ?uri.}
 			 }
 		}
-	}	
+	}

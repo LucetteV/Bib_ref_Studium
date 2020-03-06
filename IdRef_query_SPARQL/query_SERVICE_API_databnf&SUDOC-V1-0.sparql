@@ -1,31 +1,38 @@
-#TEST NICOLE ORESME <http://www.idref.fr/027053377/id>
-
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX bnf-onto: <http://data.bnf.fr/ontology/bnf-onto/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX marcrel: <http://id.loc.gov/vocabulary/relators/>
 
-SELECT ?name ?bibref ?uri
+SELECT ?name ?bibref
+(GROUP_CONCAT(DISTINCT ?uri; SEPARATOR=' ; ')AS ?SUDOC)
 (GROUP_CONCAT(DISTINCT ?role; SEPARATOR=' ; ')AS ?Role)
 (GROUP_CONCAT(DISTINCT ?sujet; SEPARATOR=' ; ')AS ?RAMEAU)
+(GROUP_CONCAT(DISTINCT ?auteur; SEPARATOR=' ; ')AS ?Associated_Author)
 
-WHERE {
-  {<http://www.idref.fr/027053377/id> skos:prefLabel ?name.
-  ?uri ?relator <http://www.idref.fr/027053377/id>; dcterms:bibliographicCitation ?bibref.
+
+	WHERE {
+  {<http://www.idref.fr/PPN/id> skos:prefLabel ?name.
+  ?uri ?relator <http://www.idref.fr/PPN/id>; dcterms:bibliographicCitation ?bibref.
 OPTIONAL{?relator skos:prefLabel ?role}
-OPTIONAL{?uri dcterms:subject ?sujet}
+OPTIONAL{?uri dcterms:subject ?sujet; marcrel:aut ?auteur ; marcrel:cwt ?comm_writer; marcrel:dub ?presumedAuthor;
+marcrel:aft ?OtherAuthor; marcrel:ann ?annotator; marcrel:aqt ?citationAuthor; marcrel:cmm ?commentateur;
+marcrel:dte ?dedicataire; marcrel:dto ?dedicateur; marcrel:ilu ?enlumineur; marcrel:oth ?other; marcrel:prt ?imprimeur; marcrel:scr ?copiste; marcrel:sgn ?signataire}
+		}
+		UNION
 
-  }
-  UNION
-  {
-    GRAPH ?g{<http://www.idref.fr/027053377/id> skos:prefLabel ?name; bnf-onto:FRBNF ?idbnf.}
-    SERVICE <http://data.bnf.fr/sparql>
-    {?noticebnf bnf-onto:FRBNF ?frbnf; foaf:focus ?ressourcebnf
-      OPTIONAL{?expression a <http://rdvocab.info/uri/schema/FRBNFentitiesRDA/Expression>; ?relator ?ressourcebnf.
-        ?relator a skos:Concept; skos:prefLabel ?role.
-        ?manifestation <http://rdvocab.info/RDArelationshipsWEMI/expressionManifested> ?expression; dcterms:title ?bibref; rdfs:seeAlso ?uri.}
-    }
-  }
-}
+		{GRAPH ?g {<http://www.idref.fr/PPN/id> foaf:name ?name ; bnf-onto:FRBNF ?frbnf.}
+		 SERVICE <http://data.bnf.fr/sparql>
+			{?noticebnf bnf-onto:FRBNF ?frbnf ; foaf:focus ?ressourcebnf
+			OPTIONAL {?expression  a <http://rdvocab.info/uri/schema/FRBRentitiesRDA/Expression> ; ?relator ?ressourcebnf.
+					  ?relator a skos:Concept ; skos:prefLabel ?role.
+	?manifestation <http://rdvocab.info/RDARelationshipsWEMI/expressionManifested> ?expression ; dcterms:title ?titre ; dcterms:date ?date ; rdfs:seeAlso ?uri.}
+			 }
+		}
+	}
+
+#COMMENTAIRES :
+# PPN est à remplacer pour chaque requête par le numéro unique idref
+# ajouter autant de '(GROUP_CONCAT(DISTINCT ?xxxx; SEPARATOR='; ')AS ?xxxxx)' que nécessaire pour faire apparaître tous les cas de figure que l'on cherche dans le OPTIONAL(marcrel:)
