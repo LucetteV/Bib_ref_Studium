@@ -1,2 +1,2 @@
 # Bib_ref_Studium
-This repository for working together on bibliographical references from Studium.
+Ce _repository_ stocke les requêtes Sparql réalisées dans le cadre d'une mission réalisée pour le LaMOP en février 2020. Ces requêtes ont été formulées pour comparer l'hétérogénéité des données type références bibliographiques contenues dans la base de données _Studium Parisiense_, avec les références bibliographiques des bases Sudoc, Calames, BnF et Persée. L'objectif est de créer ensuite un script python permettant de tester l'alignement des données entre ces bases.
